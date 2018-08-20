@@ -54,12 +54,10 @@
     <ImageButton
         android:id="@+id/curLocation_button"
         android:layout_width="40dp"
-        android:layout_marginTop="70dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:onClick="sendMessage"
-        android:background="@drawable/ic_navigation"
-        />
+        android:layout_marginTop="70dp"
+        android:background="@drawable/ic_navigation" />
 
 
 </RelativeLayout>

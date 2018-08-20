@@ -226,6 +226,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 builder.setView(dialogView);
 
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 ImageButton motorbike = findViewById(R.id.motorbike);
                 ImageButton car = findViewById(R.id.car);
                 //MOTORBIKE
@@ -245,8 +248,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         VEHICLE_MOTORBIKE = 0;
                         }});
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+
                 }}
         );
     }
