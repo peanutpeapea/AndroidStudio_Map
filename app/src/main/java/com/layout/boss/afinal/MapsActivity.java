@@ -110,7 +110,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, "new location");
+            openNearestParkingLots(new LatLng(address.getLatitude(), address.getLongitude()));
         }
+    }
+
+    private void openNearestParkingLots(LatLng destination) {
+
     }
 
     private void getDeviceLocation() {
@@ -219,18 +224,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         vehicleOptions.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                //setContentView(R.layout.vehicle_box);
 
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+                AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MapsActivity.this);
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View dialogView = inflater.inflate(R.layout.vehicle_box, null);
 
                 builder.setView(dialogView);
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                ImageButton motorbike = findViewById(R.id.motorbike);
-                ImageButton car = findViewById(R.id.car);
+                ImageButton motorbike = dialogView.findViewById(R.id.motorbike);
+                ImageButton car = dialogView.findViewById(R.id.car);
                 //MOTORBIKE
                 motorbike.setOnClickListener(new View.OnClickListener(){
                     @Override
@@ -238,6 +242,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //change icon to motorbike
                         VEHICLE_MOTORBIKE = 1;
                         VEHICLE_CAR = 0;
+                        //setContentView(R.layout.activity_maps);
+                        //dialog.dismiss();
                         }});
                 //CAR
                 car.setOnClickListener(new View.OnClickListener(){
@@ -246,9 +252,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //change icon to car
                         VEHICLE_CAR = 1;
                         VEHICLE_MOTORBIKE = 0;
+                        //dialog.dismiss();
+                        //setContentView(R.layout.activity_maps);
                         }});
 
-
+                final AlertDialog dialog = builder.create();
+                dialog.show();
                 }}
         );
     }

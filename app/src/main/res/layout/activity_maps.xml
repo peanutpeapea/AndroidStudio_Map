@@ -59,5 +59,15 @@
         android:layout_marginTop="70dp"
         android:background="@drawable/ic_navigation" />
 
-
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="+"
+        android:textSize="20dp"
+        android:background="@drawable/black_circle_button"
+        android:textColor="#fff"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>
