@@ -3,6 +3,7 @@ package com.layout.boss.afinal;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -45,7 +46,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.awareness.state.Weather;
 
@@ -53,9 +56,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.layout.boss.afinal.R.drawable.ic_motorbike;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapsActivity";
     private static final int locationPermissionCodeGranted = 1234;
@@ -71,6 +73,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public  String[] Slots;
     public Boolean[] motorbikes;
     public Boolean[] cars;
+
+    ParkingLot[] parkingLots;
 
     private String[] creatorName = {"Nguyen Mach Thanh Vy", "Ta Minh Khoi", "Tran Thanh Thao"};
     private String[] creatorID = {"1651010 16CTT", "1651050 16CTT", "1651070 16CTT"};
@@ -440,21 +444,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = getLayoutInflater().inflate(R.layout.all_parking_info, null);
-            TextView parkingNames, workingHours, slotNumber, vehicle_types;
+            TextView parkingNames, carSlot, bikeSlot, workingHours;
+            ImageView avatar = convertView.findViewById(R.id.parking_image);
             parkingNames = convertView.findViewById(R.id.parking_lot_name);
             workingHours = convertView.findViewById(R.id.working_hour);
-            slotNumber = convertView.findViewById(R.id.slot_number);
-            vehicle_types = convertView.findViewById(R.id.vehicle_type);
-            String vehicleTypes = "";
+            carSlot = convertView.findViewById(R.id.text_car);
+            bikeSlot = convertView.findViewById(R.id.text_bike);
 
-            parkingNames.setText(parkingName[position]);
-            workingHours.setText("Works from: "+workingHour[position]);
-            slotNumber.setText("Available slots: "+Slots[position]);
-            if (motorbikes[position])
-                vehicleTypes = vehicleTypes+"motorbikes ";
-            if (cars[position])
-                vehicleTypes = vehicleTypes+"cars ";
-            vehicle_types.setText(vehicleTypes);
+            parkingNames.setText(parkingLots[position].getName());
+            workingHours.setText(parkingLots[position].getTime());
+            carSlot.setText(parkingLots[position].getCarVol());
+            bikeSlot.setText(parkingLots[position].getBikeVol());
+            avatar.setImageResource(parkingLots[position].getImage());
             return convertView;
         }
 
@@ -493,5 +494,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return convertView;
         }
     }
+    private Marker[] putMarker(ParkingLot[] parkingLots) {
+        Marker[] markers = new Marker[parkingLots.length];
+        for (int i = 0; i < parkingLots.length; ++i) {
+            markers[i] = mMap.addMarker(new MarkerOptions()
+                    .title(parkingLots[i].getName())
+                    .position(new LatLng(parkingLots[i].getLatitude(), parkingLots[i].getLongtitude())));
+            markers[i].setTag(parkingLots[i]);
+        }
+        return markers;
+    }
+
+    //public ParkingLot (double Latitude, double Longtitude, String Name, int Image, String BikeVol, String CarVol, String Time){
+    private ParkingLot[] CreateParkingLot() {
+        parkingLots = new ParkingLot[21];
+        parkingLots[0] = new ParkingLot(10.769299, 106.6976081, "Bãi Giữ Xe Bảo Tàng Mỹ Thuật", R.drawable.baotangmythuat, "100", "50", "07:00 - 22:00");
+        parkingLots[1] = new ParkingLot(10.7710947, 106.7038785, "Bãi Giữ Xe Đường Hàm Nghi", R.drawable.hamnghi, "200", "0", "07:00 - 21:00");
+        parkingLots[2] = new ParkingLot(10.7710946, 106.695691, "Bãi Giữ Xe Ô Tô 24/24 - Nam Kỳ Khởi Nghĩa", R.drawable.namkykhoinghia, "0", "100", "24:00 - 24:00");
+        parkingLots[3] = new ParkingLot(10.772948, 106.7022655, "Bãi Giữ Xe Bitexco", R.drawable.bitexco, "1000", "50", "08:00 - 22:00");
+        parkingLots[4] = new ParkingLot(10.7770484, 106.7011244, "Bãi Xe Ô Tô Nhà Hát Lớn Thành Phố", R.drawable.nhahatthanhpho, "0", "50", "08:00 - 23:00");
+        parkingLots[5] = new ParkingLot(10.7771705, 106.6867483, "Bãi Giữ Xe Dinh Độc Lập ", R.drawable.dinhdoclap, "1000", "0", "08:00 - 18:00");
+        parkingLots[6] = new ParkingLot(10.7812634, 106.6939001, "Bãi Giữ Xe Bệnh Viện Nhi Đồng 2 - Nguyễn Du", R.drawable.benhviennhidong, "2000", "0", "24:00 - 24:00");
+        parkingLots[7] = new ParkingLot(10.7768643, 106.702604, "Bãi Giữ Xe Nhà Hát Thành Phố ", R.drawable.nhahatthanhphogiuxe, "200", "0", "08:00 - 22:00");
+        parkingLots[8] = new ParkingLot(10.7774164, 106.699404, "Bãi Giữ Xe Vincom Center", R.drawable.vincomcenter, "2000", "0", "08:00 - 23:00");
+        parkingLots[9] = new ParkingLot(10.7774163, 106.6928379, "BBãi Giữ Xe Diamond Plaza", R.drawable.diamondplaza, "1000", "0", "09:30 - 22:00");
+        parkingLots[10] = new ParkingLot(10.7795121, 106.6909072, "Bãi Giữ Xe Nhà Văn Hóa Thanh Niên", R.drawable.nhavanhoathanhnien, "1000", "0", "08:00 - 22:00");
+        parkingLots[11] = new ParkingLot(10.781123, 106.6995238, "Bãi Giữ Xe Đường Sách - Hai Bà Trưng", R.drawable.duongsach, "200", "0", " 08:00 - 22:00");
+        parkingLots[12] = new ParkingLot(10.7799927, 106.6969962, "Bãi Giữ Xe Đường Sách Nguyễn Văn Bình", R.drawable.duongsachnvb, "200", "0", "08:00 - 22:00");
+        parkingLots[13] = new ParkingLot(10.7798579, 106.6977188, "Bãi Giữ Xe Bưu Điện Thành Phố ", R.drawable.buudienthanhpho, "60", "0", "07:00 - 21:30");
+        parkingLots[14] = new ParkingLot(10.7827846, 106.6986138, "Bãi Giữ Xe Đường Lê Duẩn", R.drawable.leduan, "2000", "0", "07:00 - 23:00");
+        parkingLots[15] = new ParkingLot(10.7745714, 106.701146, "Bãi Giữ Xe Chung Cư 42 Nguyễn Huệ", R.drawable.chungcunguyenhue, "60", "0", "08:00 - 22:00");
+        parkingLots[16] = new ParkingLot(10.772147, 106.7047488, "Bãi Giữ Xe Phố Nguyễn Huệ - Hải Triều", R.drawable.haitrieu, "200", "0", "08:00 - 22:00");
+        parkingLots[17] = new ParkingLot(10.774121, 106.7027408, "Bãi Giữ Xe Phố Nguyễn Huệ - Tôn Thất Thiệp", R.drawable.tonthatthiep, "2000", "0", "24:00 - 24:00");
+        parkingLots[18] = new ParkingLot(10.7764498, 106.6904771, "Bãi Giữ Xe Cung Văn Hóa Lao Động", R.drawable.cungvanhoalaodong, "1000", "0", "07:00 - 22:00");
+        parkingLots[19] = new ParkingLot(10.7732471, 106.6907314, "Bãi Giữ Xe Galaxy Nguyễn Du ", R.drawable.galaxynguyendu, "1000", "0", "08:00 - 23:00");
+        parkingLots[20] = new ParkingLot(10.77305, 106.6911546, "Bãi Xe Công Viên Tao Đàn - Khuôn Viên Tao Đàn", R.drawable.khuonvientaodan, "500", "0", "06:00 - 21:00");
+        return parkingLots;
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        ParkingLot parkingLot = (ParkingLot) marker.getTag();
+        assert parkingLot != null;
+        LatLng yournewposition = new LatLng(parkingLot.getLatitude(), parkingLot.getLongtitude());
+
+        CameraPosition cameraPosition = CameraPosition.builder().target(yournewposition).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        final Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+        intent.putExtra("parkingLotTag", parkingLot);
+        marker.showInfoWindow();
+        startActivity(intent);
+        return true;
+    }
+
 }
 

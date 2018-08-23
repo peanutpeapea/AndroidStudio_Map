@@ -2,36 +2,85 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/parking_image"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:id="@+id/parking_lot_name"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"
         android:text="Parking lot name"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="110dp"
+        android:textSize="15dp"/>
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="110dp"
+        android:background="@drawable/ic_car"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="40dp"
-        android:text="Vehicle type "
-        android:id="@+id/vehicle_type"/>
+        android:layout_marginLeft="135dp"
+        android:layout_marginTop="30dp"
+        android:text="number "
+        android:id="@+id/text_car"
+        android:textSize="10dp"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="185dp"
+        android:background="@drawable/ic_motorbike"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="40dp"
-        android:text="Working hours "
+        android:layout_marginLeft="210dp"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentLeft="true"
+        android:textSize="10dp"
+        android:text="number"
+        android:id="@+id/text_bike"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/ic_clock"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="255dp"
+        android:layout_marginTop="30dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="hours "
+        android:layout_marginLeft="280dp"
         android:id="@+id/working_hour"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentLeft="true"
+        android:textSize="10dp"/>
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/ic_navigation"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="110dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="40dp"
-        android:id="@+id/slot_number"
-        android:text="Slots "/>
+        android:layout_marginLeft="140dp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/address"
+        android:text="Address "
+        android:textSize="10dp"/>
 </RelativeLayout>

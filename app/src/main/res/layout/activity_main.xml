@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Parking Lot Name"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/Image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Name"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/hawkeye"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Name"
+        tools:ignore="UnknownId" />
+
+    <ImageView
+        android:id="@+id/Car"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/Image"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/car"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Image" />
+
+    <TextView
+        android:id="@+id/CarVol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/Car"
+        android:text="20"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/Car"
+        app:layout_constraintTop_toBottomOf="@+id/Image"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/Bike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Image"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_toStartOf="@+id/BikeVol"
+        android:src="@drawable/bike"
+        app:layout_constraintStart_toEndOf="@+id/CarVol"
+        app:layout_constraintTop_toBottomOf="@+id/Image"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/BikeVol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/CarVol"
+        android:layout_marginTop="16dp"
+        android:text="50"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/Bike"
+        app:layout_constraintTop_toBottomOf="@+id/Image" />
+
+    <ImageButton
+        android:id="@+id/twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="140dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/twitter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/facebook" />
+
+    <ImageButton
+        android:id="@+id/facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="140dp"
+        android:layout_toEndOf="@+id/twitter"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/facebook"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/hospital"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/Car"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/facebook"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Car"
+        app:srcCompat="@drawable/hospital" />
+
+    <ImageButton
+        android:id="@+id/bank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Car"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/hospital"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/facebook"
+        app:layout_constraintEnd_toStartOf="@+id/church"
+        app:layout_constraintStart_toEndOf="@+id/hospital"
+        app:layout_constraintTop_toBottomOf="@+id/Car"
+        app:srcCompat="@drawable/bank" />
+
+    <ImageButton
+        android:id="@+id/shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Car"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@+id/hospital"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/twitter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Car"
+        app:srcCompat="@drawable/shop" />
+
+    <ImageButton
+        android:id="@+id/church"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Car"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/hospital"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/facebook"
+        app:layout_constraintEnd_toEndOf="@+id/shop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Car"
+        app:srcCompat="@drawable/church" />
+
+    <ImageButton
+        android:id="@+id/cinema"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Car"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/hospital"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/twitter"
+        app:layout_constraintEnd_toStartOf="@+id/shop"
+        app:layout_constraintStart_toEndOf="@+id/church"
+        app:layout_constraintTop_toBottomOf="@+id/Car"
+        app:srcCompat="@drawable/cinema" />
+
+    <TextView
+        android:id="@+id/Share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="Chia sẻ qua:"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/facebook"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hospital" />
+
+    <TextView
+        android:id="@+id/Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="24:00 - 24:00"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/BikeVol"
+        app:layout_constraintTop_toBottomOf="@+id/Image" />
+
+</android.support.constraint.ConstraintLayout>
