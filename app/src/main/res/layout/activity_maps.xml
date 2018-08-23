@@ -60,6 +60,7 @@
         android:background="@drawable/ic_navigation" />
 
     <Button
+        android:id="@+id/moreWidgets"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:text="+"
