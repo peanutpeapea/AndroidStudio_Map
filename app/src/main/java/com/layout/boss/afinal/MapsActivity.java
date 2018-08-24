@@ -1,7 +1,6 @@
 package com.layout.boss.afinal;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,12 +11,9 @@ import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -31,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,10 +34,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.awareness.Awareness;
-import com.google.android.gms.awareness.snapshot.WeatherResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -53,29 +44,28 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.awareness.state.Weather;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    //Student stuff
+    private String[] creatorName = {"Nguyen Mach Thanh Vy", "Ta Minh Khoi", "Tran Thanh Thao"};
+    private String[] creatorID = {"1651010 16CTT", "1651050 16CTT", "1651070 16CTT"};
+    private String[] creatorEmail = {"bla", "bla", "bla"};
+
+    //Activity stuff
     private static final String TAG = "MapsActivity";
     private static final int locationPermissionCodeGranted = 1234;
     private Boolean locationPermissionsGranted = false;
     private static final float DEFAULT_ZOOM = 15f;
-    private int VEHICLE_MOTORBIKE = 1;
-    private int VEHICLE_CAR = 0;
     private static Context context;
 
     private int[] weatherConditions;
@@ -83,10 +73,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker markers[];
 
-    ParkingLot[] parkingLots;
-    private String[] creatorName = {"Nguyen Mach Thanh Vy", "Ta Minh Khoi", "Tran Thanh Thao"};
-    private String[] creatorID = {"1651010 16CTT", "1651050 16CTT", "1651070 16CTT"};
-    private String[] creatorEmail = {"bla", "bla", "bla"};
+    //Parking
+    private ParkingLot[] parkingLots;
+    private LatLng[] latLng;
+    int maxParkingShown = 3;        //How many location do we mark?
+    private int VEHICLE_MOTORBIKE = 1;
+    private int VEHICLE_CAR = 0;
 
     private EditText searchText;
     private GoogleMap mMap;
@@ -125,6 +117,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
 
         context = getApplicationContext();
+
+        //Parking database
+        latLng = GetParkingDatabase();            //Database
+
         //initWeather();
         init();                     //Initialize the search bar
         initVehicle();
@@ -156,7 +152,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             openNearestParkingLots(destination);
         }
     }
-
     private void openNearestParkingLots(LatLng destination) {
         LatLng[] nearestParkingLots = CalculateDistance(destination);
         ParkingLot[] neededParkingLot = new ParkingLot[3];
@@ -170,7 +165,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         Marker[] neededMarkers = putMarker(neededParkingLot);
     }
-
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: getting current location");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -410,57 +404,102 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         alertDialog.show();
     }
     private LatLng[] CalculateDistance(LatLng destination){
-        float[] distance = new float[21];
-        LatLng[] result = new LatLng[3];
-        float[] results = new float[10];
-        LatLng[] latLng = new LatLng[21];
-        ListOfLatLng[] listOfLatLng = CreateList();
-        for(int i=0;i<listOfLatLng.length;++i){
-            latLng[i] = new LatLng(listOfLatLng[i].getLat(), listOfLatLng[i].getLng());
-        }
+        float[] distance = new float[21];           //Distance between database location and destination
+        LatLng[] result = new LatLng[3];            //Return array
+
         double end_latitude, end_longitude;
-        for(int i=0; i<distance.length;++i){
+        for(int i=0; i < distance.length; i++){
+            float[] results = new float[10];
             end_latitude = latLng[i].latitude;
             end_longitude = latLng[i].longitude;
             Location.distanceBetween(destination.latitude, destination.longitude, end_latitude, end_longitude, results);
             distance[i]=results[0];
             Log.d("Distance", String.valueOf(distance[i]));
         }
-        float[] finalDistance =  distance;
-        Arrays.sort(finalDistance);
-        for (int i=0; i<3; i++){
-            for (int j=0; j<21; j++){
-                if (finalDistance[i]==distance[j])
-                    result[i]=latLng[j];
-            }
 
+        ArrayList<Integer> resultDistance = new ArrayList<Integer>();       //First, mark the index of the <maxLocation> nearest parking lot
+        resultDistance.add(0);
+        for(int indx = 1; indx < distance.length; indx++){
+            if (distance[resultDistance.get(0)] > distance[indx]){
+                //Only check position to add if the current checking value is smaller than the largest value in the current result list
+                int addPos = 0;
+                for(; addPos < resultDistance.size(); addPos++){
+                    if (distance[resultDistance.get(addPos)] < distance[indx]){
+                        //Found a place to put in
+                        break;
+                    }
+                }
+
+                resultDistance.add(addPos, indx);       //Afterward, append the element into the list
+
+                if (resultDistance.size() > maxParkingShown){
+                    //If the list is bigger than the desire number of location, then delete the largest element in the list
+                    resultDistance.remove(0);
+                }
+            } else if (resultDistance.size() < maxParkingShown){
+                //Or maybe we have only put the one with smallest value into our list
+                // So, if the there are still space left to put the new one in, put it in :D
+                resultDistance.add(0, indx);
+            }
         }
+
+        //Add location into the result list
+        for(int indx = 0; indx < maxParkingShown; indx++){
+            result[indx] = latLng[resultDistance.get(indx)];
+            result[indx] = latLng[resultDistance.get(indx)];
+        }
+
         return result;
     }
-    private ListOfLatLng[] CreateList(){
-        ListOfLatLng[] listOfLatLngs = new ListOfLatLng[21];
-        listOfLatLngs[0] = new ListOfLatLng(10.769299, 106.6976081);
-        listOfLatLngs[1] = new ListOfLatLng(10.7710947, 106.7038785);
-        listOfLatLngs[2] = new ListOfLatLng(10.7710946, 106.695691);
-        listOfLatLngs[3] = new ListOfLatLng(10.772948, 106.7022655);
-        listOfLatLngs[4] = new ListOfLatLng(10.7770484, 106.7011244);
-        listOfLatLngs[5] = new ListOfLatLng(10.7771705, 106.6867483);
-        listOfLatLngs[6] = new ListOfLatLng(10.7812634, 106.6939001);
-        listOfLatLngs[7] = new ListOfLatLng(10.7768643, 106.702604);
-        listOfLatLngs[8] = new ListOfLatLng(10.7774164, 106.699404);
-        listOfLatLngs[9] = new ListOfLatLng(10.7774163, 106.6928379);
-        listOfLatLngs[10] = new ListOfLatLng(10.7795121, 106.6909072);
-        listOfLatLngs[11] = new ListOfLatLng(10.781123, 106.6995238);
-        listOfLatLngs[12] = new ListOfLatLng(10.7799927, 106.6969962);
-        listOfLatLngs[13] = new ListOfLatLng(10.7798579, 106.6977188);
-        listOfLatLngs[14] = new ListOfLatLng(10.7827846, 106.6986138);
-        listOfLatLngs[15] = new ListOfLatLng(10.7745714, 106.701146);
-        listOfLatLngs[16] = new ListOfLatLng(10.772147, 106.7047488);
-        listOfLatLngs[17] = new ListOfLatLng(10.774121, 106.7027408);
-        listOfLatLngs[18] = new ListOfLatLng(10.7764498, 106.6904771);
-        listOfLatLngs[19] = new ListOfLatLng(10.7732471, 106.6907314);
-        listOfLatLngs[20] = new ListOfLatLng(10.77305, 106.6911546);
-        return listOfLatLngs;
+    private LatLng[] CreateList(){
+        LatLng[] returnArr = new LatLng[21];
+        returnArr[0] = new LatLng(10.769299, 106.6976081);
+        returnArr[1] = new LatLng(10.7710947, 106.7038785);
+        returnArr[2] = new LatLng(10.7710946, 106.695691);
+        returnArr[3] = new LatLng(10.772948, 106.7022655);
+        returnArr[4] = new LatLng(10.7770484, 106.7011244);
+        returnArr[5] = new LatLng(10.7771705, 106.6867483);
+        returnArr[6] = new LatLng(10.7812634, 106.6939001);
+        returnArr[7] = new LatLng(10.7768643, 106.702604);
+        returnArr[8] = new LatLng(10.7774164, 106.699404);
+        returnArr[9] = new LatLng(10.7774163, 106.6928379);
+        returnArr[10] = new LatLng(10.7795121, 106.6909072);
+        returnArr[11] = new LatLng(10.781123, 106.6995238);
+        returnArr[12] = new LatLng(10.7799927, 106.6969962);
+        returnArr[13] = new LatLng(10.7798579, 106.6977188);
+        returnArr[14] = new LatLng(10.7827846, 106.6986138);
+        returnArr[15] = new LatLng(10.7745714, 106.701146);
+        returnArr[16] = new LatLng(10.772147, 106.7047488);
+        returnArr[17] = new LatLng(10.774121, 106.7027408);
+        returnArr[18] = new LatLng(10.7764498, 106.6904771);
+        returnArr[19] = new LatLng(10.7732471, 106.6907314);
+        returnArr[20] = new LatLng(10.77305, 106.6911546);
+        return returnArr;
+    }
+    private LatLng[] GetParkingDatabase(){
+        LatLng[] returnArr = new LatLng[21];
+        returnArr[0] = new LatLng(10.769299, 106.6976081);
+        returnArr[1] = new LatLng(10.7710947, 106.7038785);
+        returnArr[2] = new LatLng(10.7710946, 106.695691);
+        returnArr[3] = new LatLng(10.772948, 106.7022655);
+        returnArr[4] = new LatLng(10.7770484, 106.7011244);
+        returnArr[5] = new LatLng(10.7771705, 106.6867483);
+        returnArr[6] = new LatLng(10.7812634, 106.6939001);
+        returnArr[7] = new LatLng(10.7768643, 106.702604);
+        returnArr[8] = new LatLng(10.7774164, 106.699404);
+        returnArr[9] = new LatLng(10.7774163, 106.6928379);
+        returnArr[10] = new LatLng(10.7795121, 106.6909072);
+        returnArr[11] = new LatLng(10.781123, 106.6995238);
+        returnArr[12] = new LatLng(10.7799927, 106.6969962);
+        returnArr[13] = new LatLng(10.7798579, 106.6977188);
+        returnArr[14] = new LatLng(10.7827846, 106.6986138);
+        returnArr[15] = new LatLng(10.7745714, 106.701146);
+        returnArr[16] = new LatLng(10.772147, 106.7047488);
+        returnArr[17] = new LatLng(10.774121, 106.7027408);
+        returnArr[18] = new LatLng(10.7764498, 106.6904771);
+        returnArr[19] = new LatLng(10.7732471, 106.6907314);
+        returnArr[20] = new LatLng(10.77305, 106.6911546);
+        return returnArr;
     }
 
     @Override
