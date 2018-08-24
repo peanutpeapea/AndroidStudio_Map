@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ndroid="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        tools:context=".MapsActivity" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,8 +27,8 @@
         android:id="@+id/relLayout1">
 
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:id="@+id/ic_magnify"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
@@ -41,8 +46,8 @@
             android:hint="Enter Address, City or Zip Code"
             android:imeOptions="actionSearch"/>
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@drawable/ic_motorbike"
             android:layout_marginRight="10dp"
             android:id="@+id/vehicle_option"
@@ -59,16 +64,53 @@
         android:layout_marginTop="70dp"
         android:background="@drawable/ic_navigation" />
 
-    <Button
-        android:id="@+id/moreWidgets"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="+"
-        android:textSize="20dp"
-        android:background="@drawable/black_circle_button"
-        android:textColor="#fff"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/black_circle_button"
+        app:backgroundTint="#000"
+        app:elevation="5dp"
+        app:fabSize="normal"/>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="70dp"
+        android:id="@+id/button_allInfo"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_parkinglot"
+        android:backgroundTint="#000"
+        app:fabSize="normal"
+        android:visibility="invisible"/>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        app:fabSize="normal"
+        android:id="@+id/aboutUs"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/ic_aboutus"
+        android:backgroundTint="#000"
+        android:visibility="invisible"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_dismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/black_circle_button"
+        app:backgroundTint="#000"
+        app:elevation="5dp"
+        app:fabSize="normal"
+        android:visibility="invisible"/>
 </RelativeLayout>

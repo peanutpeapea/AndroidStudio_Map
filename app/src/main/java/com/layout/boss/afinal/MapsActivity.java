@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,6 +18,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -91,7 +96,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public Location currentLocation;
     private LatLng currentLatLng;
-    private Weather mWeather;
+    FloatingActionButton allParkingInfo, aboutUs, moreWidgets, dismissWidgets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,8 +236,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void init() {
-        Log.d(TAG, "init: initializing");
-        //SEARCH ACTION BUTTON
+        parkingLots = CreateParkingLot();
+
+        //SEARCH ACTION BUTTON;
         ImageButton search = findViewById(R.id.ic_magnify);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,67 +271,67 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         //MORE WIDGETS BUTTON
-        Button moreWidget = findViewById(R.id.moreWidgets);
-        moreWidget.setOnClickListener(new View.OnClickListener(){
+        moreWidgets = findViewById(R.id.fab);
+        moreWidgets.setImageBitmap(textAsBitmap("+",20, Color.WHITE));
+
+        allParkingInfo = findViewById(R.id.button_allInfo);
+        allParkingInfo.setImageResource(R.drawable.ic_parkinglot);
+
+        aboutUs = findViewById(R.id.aboutUs);
+        aboutUs.setImageResource(R.drawable.ic_aboutus);
+
+        dismissWidgets = findViewById(R.id.fab_dismiss);
+        dismissWidgets.setImageBitmap(textAsBitmap("X", 20, Color.WHITE));
+        moreWidgets.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View dialogView = inflater.inflate(R.layout.more_widgets_button, null);
-
-                builder.setView(dialogView);
-
-                ImageButton weather = dialogView.findViewById(R.id.button_weather);
-                ImageButton allParkingInfo = dialogView.findViewById(R.id.button_allInfo);
-                ImageButton aboutUs = dialogView.findViewById(R.id.aboutUs);
-
-                //ALL PARKING LOTS INFORMATION
-
-                allParkingInfo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        initAllParkingInfo();
-                    }
-                });
-
-                aboutUs.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        initAboutUSLayout();
-                    }
-                });
-                //CHANGE WEATHER ICON
-
-                /*weather.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //getWeatherInformation();
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MapsActivity.this);
-                        LayoutInflater inflater1 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View weatherInfo = inflater1.inflate(R.layout.weather_information, null);
-
-                        builder1.setView(weatherInfo);
-
-                        TextView humidity = weatherInfo.findViewById(R.id.weather_humidity);
-                        TextView temperature = weatherInfo.findViewById(R.id.weather_temperature);
-                        humidity.setText("Nothing yet");
-                        temperature.setText("Nothing yet");
-
-                        AlertDialog alertDialogWeather = builder1.create();
-                        alertDialogWeather.show();
-                    }
-                });*/
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+            showMoreWidget();
             }
-
-
+        });
+        allParkingInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initAllParkingInfo();
+            }
+        });
+        aboutUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initAboutUSLayout();
+            }
+        });
+        dismissWidgets.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                setDismissWidgets();
+            }
         });
         }
+    public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.0f); // round
+        int height = (int) (baseline + paint.descent() + 0.0f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-    private void getWeatherInformation() {
-        weatherConditions = mWeather.getConditions() ;
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+    }
+    public void showMoreWidget(){
+        allParkingInfo.show();
+        aboutUs.show();
+        dismissWidgets.show();
+        moreWidgets.hide();
+    }
+    public void setDismissWidgets(){
+        allParkingInfo.hide();
+        aboutUs.hide();
+        dismissWidgets.hide();
+        moreWidgets.show();
     }
 
     private void initVehicle(){
@@ -376,17 +382,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
     private void initAllParkingInfo() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View allParkingInfo = inflater.inflate(R.layout.all_parking_info, null);
-        builder.setView(allParkingInfo);
+        mMap.clear();
+        markers = putMarker(parkingLots);
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.12);
 
-        ListView listView = allParkingInfo.findViewById(R.id.all_parking_info);
-        parkingInfoAdapter adapter = new parkingInfoAdapter();
-        listView.setAdapter(adapter);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), width, height, padding);
+        mMap.animateCamera(cameraUpdate);
+        mMap.setOnMarkerClickListener(this);
     }
     private void initAboutUSLayout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
@@ -414,12 +422,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         for(int i=0; i<distance.length;++i){
             end_latitude = latLng[i].latitude;
             end_longitude = latLng[i].longitude;
-            Location.distanceBetween(currentLatLng.latitude, currentLatLng.longitude, end_latitude, end_longitude, results);
+            Location.distanceBetween(destination.latitude, destination.longitude, end_latitude, end_longitude, results);
             distance[i]=results[0];
             Log.d("Distance", String.valueOf(distance[i]));
         }
-        float[] finalDistance = new float[21];
-        finalDistance = distance;
+        float[] finalDistance =  distance;
         Arrays.sort(finalDistance);
         for (int i=0; i<3; i++){
             for (int j=0; j<21; j++){
@@ -490,41 +497,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //ADAPTER
-    class parkingInfoAdapter extends BaseAdapter{
-        @Override
-        public int getCount() {
-            return parkingName.length;
-        }
 
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.all_parking_info, null);
-            TextView parkingNames, carSlot, bikeSlot, workingHours;
-            ImageView avatar = convertView.findViewById(R.id.parking_image);
-            parkingNames = convertView.findViewById(R.id.parking_lot_name);
-            workingHours = convertView.findViewById(R.id.working_hour);
-            carSlot = convertView.findViewById(R.id.text_car);
-            bikeSlot = convertView.findViewById(R.id.text_bike);
-
-            parkingNames.setText(parkingLots[position].getName());
-            workingHours.setText(parkingLots[position].getTime());
-            carSlot.setText(parkingLots[position].getCarVol());
-            bikeSlot.setText(parkingLots[position].getBikeVol());
-            avatar.setImageResource(parkingLots[position].getImage());
-            return convertView;
-        }
-
-    }
     class creatorInfoAdapter extends BaseAdapter{
 
         @Override
@@ -569,9 +542,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return markers;
     }
-    //
+    //PARKING STUFF
     private ParkingLot[] CreateParkingLot() {
-        parkingLots = new ParkingLot[21];
+        ParkingLot[] parkingLots = new ParkingLot[21];
         parkingLots[0] = new ParkingLot(10.769299, 106.6976081, "Bãi Giữ Xe Bảo Tàng Mỹ Thuật", R.drawable.baotangmythuat, "100", "50", "07:00 - 22:00");
         parkingLots[1] = new ParkingLot(10.7710947, 106.7038785, "Bãi Giữ Xe Đường Hàm Nghi", R.drawable.hamnghi, "200", "0", "07:00 - 21:00");
         parkingLots[2] = new ParkingLot(10.7710946, 106.695691, "Bãi Giữ Xe Ô Tô 24/24 - Nam Kỳ Khởi Nghĩa", R.drawable.namkykhoinghia, "0", "100", "24:00 - 24:00");
@@ -762,6 +735,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             this.lng = lng;
         }
     }
+
 
 }
 
