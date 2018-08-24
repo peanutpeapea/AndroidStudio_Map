@@ -11,6 +11,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Looper;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,14 +51,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.awareness.state.Weather;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Arrays;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -69,13 +75,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private int[] weatherConditions;
     public String[] parkingName;
-    public String[] workingHour;
-    public  String[] Slots;
-    public Boolean[] motorbikes;
-    public Boolean[] cars;
+
+    private Marker markers[];
 
     ParkingLot[] parkingLots;
-
     private String[] creatorName = {"Nguyen Mach Thanh Vy", "Ta Minh Khoi", "Tran Thanh Thao"};
     private String[] creatorID = {"1651010 16CTT", "1651050 16CTT", "1651070 16CTT"};
     private String[] creatorEmail = {"bla", "bla", "bla"};
@@ -150,7 +153,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void openNearestParkingLots(LatLng destination) {
-
+        LatLng[] nearestParkingLots = CalculateDistance(destination);
+        ParkingLot[] neededParkingLot = new ParkingLot[3];
+        for (int i=0; i<3; i++){
+            for (int j=0; j<21; j++){
+                if (nearestParkingLots[i].longitude == parkingLots[j].getLongtitude()
+                        && nearestParkingLots[i].latitude==parkingLots[j].getLatitude())
+                    neededParkingLot[i] = parkingLots[j];
+            }
+        }
+        mMap.clear();
+        Marker[] neededMarkers = putMarker(neededParkingLot);
     }
 
     private void getDeviceLocation() {
@@ -173,8 +186,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Add a marker to the current location
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(title);
         mMap.addMarker(markerOptions);
-    }
-    private void addAllParkingLotsMarker() {
     }
 
     //Initialization - On Start stuff
@@ -363,7 +374,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
-        addAllParkingLotsMarker();
     }
     private void initAllParkingInfo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
@@ -390,6 +400,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private LatLng[] CalculateDistance(LatLng destination){
+        float[] distance = new float[21];
+        LatLng[] result = new LatLng[3];
+        float[] results = new float[10];
+        LatLng[] latLng = new LatLng[21];
+        ListOfLatLng[] listOfLatLng = CreateList();
+        for(int i=0;i<listOfLatLng.length;++i){
+            latLng[i] = new LatLng(listOfLatLng[i].getLat(), listOfLatLng[i].getLng());
+        }
+        double end_latitude, end_longitude;
+        for(int i=0; i<distance.length;++i){
+            end_latitude = latLng[i].latitude;
+            end_longitude = latLng[i].longitude;
+            Location.distanceBetween(currentLatLng.latitude, currentLatLng.longitude, end_latitude, end_longitude, results);
+            distance[i]=results[0];
+            Log.d("Distance", String.valueOf(distance[i]));
+        }
+        float[] finalDistance = new float[21];
+        finalDistance = distance;
+        Arrays.sort(finalDistance);
+        for (int i=0; i<3; i++){
+            for (int j=0; j<21; j++){
+                if (finalDistance[i]==distance[j])
+                    result[i]=latLng[j];
+            }
+
+        }
+        return result;
+    }
+    private ListOfLatLng[] CreateList(){
+        ListOfLatLng[] listOfLatLngs = new ListOfLatLng[21];
+        listOfLatLngs[0] = new ListOfLatLng(10.769299, 106.6976081);
+        listOfLatLngs[1] = new ListOfLatLng(10.7710947, 106.7038785);
+        listOfLatLngs[2] = new ListOfLatLng(10.7710946, 106.695691);
+        listOfLatLngs[3] = new ListOfLatLng(10.772948, 106.7022655);
+        listOfLatLngs[4] = new ListOfLatLng(10.7770484, 106.7011244);
+        listOfLatLngs[5] = new ListOfLatLng(10.7771705, 106.6867483);
+        listOfLatLngs[6] = new ListOfLatLng(10.7812634, 106.6939001);
+        listOfLatLngs[7] = new ListOfLatLng(10.7768643, 106.702604);
+        listOfLatLngs[8] = new ListOfLatLng(10.7774164, 106.699404);
+        listOfLatLngs[9] = new ListOfLatLng(10.7774163, 106.6928379);
+        listOfLatLngs[10] = new ListOfLatLng(10.7795121, 106.6909072);
+        listOfLatLngs[11] = new ListOfLatLng(10.781123, 106.6995238);
+        listOfLatLngs[12] = new ListOfLatLng(10.7799927, 106.6969962);
+        listOfLatLngs[13] = new ListOfLatLng(10.7798579, 106.6977188);
+        listOfLatLngs[14] = new ListOfLatLng(10.7827846, 106.6986138);
+        listOfLatLngs[15] = new ListOfLatLng(10.7745714, 106.701146);
+        listOfLatLngs[16] = new ListOfLatLng(10.772147, 106.7047488);
+        listOfLatLngs[17] = new ListOfLatLng(10.774121, 106.7027408);
+        listOfLatLngs[18] = new ListOfLatLng(10.7764498, 106.6904771);
+        listOfLatLngs[19] = new ListOfLatLng(10.7732471, 106.6907314);
+        listOfLatLngs[20] = new ListOfLatLng(10.77305, 106.6911546);
+        return listOfLatLngs;
     }
 
     @Override
@@ -422,6 +486,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mLocationRequest.setFastestInterval(120000);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         }
+
     }
 
     //ADAPTER
@@ -504,8 +569,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return markers;
     }
-
-    //public ParkingLot (double Latitude, double Longtitude, String Name, int Image, String BikeVol, String CarVol, String Time){
+    //
     private ParkingLot[] CreateParkingLot() {
         parkingLots = new ParkingLot[21];
         parkingLots[0] = new ParkingLot(10.769299, 106.6976081, "Bãi Giữ Xe Bảo Tàng Mỹ Thuật", R.drawable.baotangmythuat, "100", "50", "07:00 - 22:00");
@@ -544,8 +608,159 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Intent intent = new Intent(MapsActivity.this, MainActivity.class);
         intent.putExtra("parkingLotTag", parkingLot);
         marker.showInfoWindow();
+        recreate();
         startActivity(intent);
         return true;
+    }
+
+    public class MainActivity extends AppCompatActivity {
+        private ParkingLot parkingLot;
+
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+
+            // ánh xạ
+            this.parkingLot = getIntent().getParcelableExtra("parkingLotTag");
+            ImageView imageView = (ImageView) findViewById(R.id.Image);
+            ImageView imageView1 = (ImageView) findViewById(R.id.Bike);
+            ImageView imageView2 = (ImageView) findViewById(R.id.Car);
+            TextView textView = (TextView) findViewById(R.id.Name);
+            TextView textView1 = (TextView) findViewById(R.id.CarVol);
+            TextView textView2 = (TextView) findViewById(R.id.BikeVol);
+            TextView textView3 = (TextView) findViewById(R.id.Share);
+            TextView textView4 = (TextView) findViewById(R.id.Time);
+            ImageButton imageButton = (ImageButton) findViewById(R.id.church);
+            ImageButton imageButton1 = (ImageButton) findViewById(R.id.bank);
+            ImageButton imageButton2= (ImageButton) findViewById(R.id.hospital);
+            ImageButton imageButton3 = (ImageButton) findViewById(R.id.shop);
+            ImageButton imageButton4 = (ImageButton) findViewById(R.id.cinema);
+            ImageButton imageButton5 = (ImageButton) findViewById(R.id.facebook);
+            ImageButton imageButton6 = (ImageButton) findViewById(R.id.twitter);
+
+            // Thay đổi giá trị
+            imageView.setImageResource(this.parkingLot.getImage());
+            //////////
+            textView.setText(this.parkingLot.getName());
+            textView1.setText(this.parkingLot.getBikeVol());
+            textView2.setText(this.parkingLot.getCarVol());
+            textView4.setText(this.parkingLot.getTime());
+            //////////
+        /*imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Church church = new Church();
+                Intent nearbyChurch = new Intent(MainActivity.this, Church.class);
+                nearbyChurch.putExtra("parkingLotTag", parkingLot);
+                startActivity(nearbyChurch);
+            }
+        });
+        imageButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bank bank = new Bank();
+                Intent nearbyBank = new Intent(MainActivity.this, Bank.class);
+                nearbyBank.putExtra("parkingLotTag", parkingLot);
+                startActivity(nearbyBank);
+            }
+        });
+        imageButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Hospital hospital = new Hospital();
+                Intent nearbyHospital = new Intent(MainActivity.this, Hospital.class);
+                nearbyHospital.putExtra("parkingLotTag", parkingLot);
+                startActivity(nearbyHospital);
+            }
+        });
+        imageButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Shop shop = new Shop();
+                Intent nearbyShop = new Intent(MainActivity.this, Shop.class);
+                nearbyShop.putExtra("parkingLotTag", parkingLot);
+                startActivity(nearbyShop);
+            }
+        });
+        imageButton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cinema cinema = new Cinema();
+                Intent nearbyCinema = new Intent(MainActivity.this, Cinema.class);
+                nearbyCinema.putExtra("parkingLotTag", parkingLot);
+                startActivity(nearbyCinema);
+            }
+        });
+        imageButton5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        imageButton6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+*/
+        }
+    }
+
+    public class ListOfLatLng implements Parcelable {
+        private double lat, lng;
+
+        public ListOfLatLng(double lat, double lng){
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        protected ListOfLatLng(Parcel in) {
+            lat = in.readDouble();
+            lng = in.readDouble();
+        }
+
+        public final Creator<ListOfLatLng> CREATOR = new Creator<ListOfLatLng>() {
+            @Override
+            public ListOfLatLng createFromParcel(Parcel in) {
+                return new ListOfLatLng(in);
+            }
+
+            @Override
+            public ListOfLatLng[] newArray(int size) {
+                return new ListOfLatLng[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeDouble(lat);
+            dest.writeDouble(lng);
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public double getLng() {
+            return lng;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
     }
 
 }
