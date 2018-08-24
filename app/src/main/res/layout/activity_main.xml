@@ -136,13 +136,13 @@
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/facebook"
-        app:layout_constraintEnd_toStartOf="@+id/church"
+        app:layout_constraintEnd_toStartOf="@+id/restaurant"
         app:layout_constraintStart_toEndOf="@+id/hospital"
         app:layout_constraintTop_toBottomOf="@+id/Car"
         app:srcCompat="@drawable/bank" />
 
     <ImageButton
-        android:id="@+id/shop"
+        android:id="@+id/cafe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Car"
@@ -157,21 +157,19 @@
         app:srcCompat="@drawable/shop" />
 
     <ImageButton
-        android:id="@+id/church"
-        android:layout_width="wrap_content"
+        android:id="@+id/restaurant"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Car"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/hospital"
         android:background="@null"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/facebook"
-        app:layout_constraintEnd_toEndOf="@+id/shop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Car"
-        app:srcCompat="@drawable/church" />
+        app:layout_constraintTop_toTopOf="@+id/hospital"
+        app:srcCompat="@drawable/restaurant" />
 
     <ImageButton
         android:id="@+id/cinema"
@@ -185,8 +183,8 @@
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/twitter"
-        app:layout_constraintEnd_toStartOf="@+id/shop"
-        app:layout_constraintStart_toEndOf="@+id/church"
+        app:layout_constraintEnd_toStartOf="@+id/cafe"
+        app:layout_constraintStart_toEndOf="@+id/restaurant"
         app:layout_constraintTop_toBottomOf="@+id/Car"
         app:srcCompat="@drawable/cinema" />
 

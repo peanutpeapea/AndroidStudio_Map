@@ -40,7 +40,22 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_maps">
-
+        </activity>
+        <activity
+            android:name=".Hospital"
+            android:label="@string/title_activity_maps">
+        </activity>
+        <activity
+            android:name=".Restaurant"
+            android:label="@string/title_activity_maps">
+        </activity>
+        <activity
+            android:name=".Bank"
+            android:label="@string/title_activity_maps">
+        </activity>
+        <activity
+            android:name=".Cinema"
+            android:label="@string/title_activity_maps">
         </activity>
     </application>
 

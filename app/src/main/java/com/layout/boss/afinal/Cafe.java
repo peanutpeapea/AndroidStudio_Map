@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Cinema extends FragmentActivity implements OnMapReadyCallback {
+public class Cafe extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     double latitude;
@@ -28,12 +28,13 @@ public class Cinema extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //take data
         this.parkingLot = getIntent().getParcelableExtra("parkingLotTag");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
-        setContentView(R.layout.activity_cinema);
+        setContentView(R.layout.activity_cafe);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map_cinema);
-        mapFragment.getMapAsync(Cinema.this);
+                .findFragmentById(R.id.map_cafe);
+        mapFragment.getMapAsync(Cafe.this);
     }
 
 
@@ -59,7 +60,7 @@ public class Cinema extends FragmentActivity implements OnMapReadyCallback {
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        String url = getUrl(latitude, longitude, "movie_theater");
+        String url = getUrl(latitude, longitude, "cafe");
         Object[] DataTransfer = new Object[2];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
@@ -67,7 +68,7 @@ public class Cinema extends FragmentActivity implements OnMapReadyCallback {
         GetNearByPlacesData getNearbyPlacesData = new GetNearByPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
 
-        Toast.makeText(this, "Nearby Cinema", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Nearby Cafes", Toast.LENGTH_LONG).show();
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mCurrLocationMarker.getPosition());
 
